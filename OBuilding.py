@@ -1,5 +1,5 @@
 class OBuilding:
-    def __init__(self, min, max, elevatornumber, elevators, name):
+    def __init__(self, min, max, elevatornumber, elevators, name, list):
         self.minFloor = min
         self.maxFloor = max
         self.elevatornumber = elevatornumber
@@ -8,11 +8,12 @@ class OBuilding:
         for x in elevators:
             self.__addElevator(self, x)
         self.calls = []
+        self.__addcalls(self, list)
 
     def __addElevator(self, elev):
         self.elevatorlist.append(self, elev)
 
-    def getElevator(self,i):
+    def getElevator(self, i):
         return self.elevatorlist.__getitem__(self, i)
 
     def getMinFloor(self):
@@ -28,11 +29,8 @@ class OBuilding:
         return self.buildingname
 
     def getFloorNumber(self):
-        return abs(self.maxFloor-self.minFloor)
+        return abs(self.maxFloor - self.minFloor)
 
     def __addcalls(self, list):
         for x in list:
             self.calls.append(self, x)
-
-
-
