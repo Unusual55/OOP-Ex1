@@ -1,36 +1,30 @@
 class OBuilding:
-    def __init__(self, min, max, elevatornumber, elevators, name, list):
-        self.minFloor = min
-        self.maxFloor = max
-        self.elevatornumber = elevatornumber
-        self.elevatorlist = []
-        self.buildingname = name
-        for x in elevators:
-            self.__addElevator(self, x)
+    def __init__(self, minFloor, maxFloor, elevatorsamount):
+        self.minFloor = minFloor
+        self.maxFloor = maxFloor
+        self.elevatorsamount = elevatorsamount
+        self.elevatorslist = []
+        self.buildingname = None
         self.calls = []
-        self.__addcalls(self, list)
 
-    def __addElevator(self, elev):
-        self.elevatorlist.append(self, elev)
+    def AddElevator(self, elev):
+        self.elevatorslist.append(elev)
 
-    def getElevator(self, i):
-        return self.elevatorlist.__getitem__(self, i)
+    def GetElevator(self, i):
+        return self.elevatorslist[i]
 
-    def getMinFloor(self):
+    def GetMinFloor(self):
         return self.minFloor
 
-    def getMaxFloor(self):
+    def GetMaxFloor(self):
         return self.maxFloor
 
-    def getNumberOfElevators(self):
-        return self.elevatornumber
+    def GetNumberOfElevators(self):
+        return self.elevatorsamount
 
-    def getBuildingName(self):
-        return self.buildingname
-
-    def getFloorNumber(self):
+    def GetFloorNumber(self):
         return abs(self.maxFloor - self.minFloor)
 
-    def __addcalls(self, list):
-        for x in list:
-            self.calls.append(self, x)
+    def AddCalls(self, calls):
+        for x in calls:
+            self.calls.append(x)

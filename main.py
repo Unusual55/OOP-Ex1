@@ -8,12 +8,7 @@ jsonPath = './data/Ex1_input/Ex1_Buildings/B2.json'
 
 def main():
     parser = BuildingParser(jsonPath)
-    # print(parser.building)
     print(json.dumps(parser.building, indent=4))
-    # with open(jsonPath) as f:
-    #     data = json.load(f)
-    #     print(data["_elevators"])
-
     pass
 
 
