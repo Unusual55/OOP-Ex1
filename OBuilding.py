@@ -7,9 +7,9 @@ class OBuilding:
         self.buildingname = name
         for x in elevators:
             self.__addElevator(self, x)
+        self.calls = []
 
-
-    def __addElevator(self,elev):
+    def __addElevator(self, elev):
         self.elevatorlist.append(self, elev)
 
     def getElevator(self,i):
@@ -29,6 +29,10 @@ class OBuilding:
 
     def getFloorNumber(self):
         return abs(self.maxFloor-self.minFloor)
+
+    def __addcalls(self, list):
+        for x in list:
+            self.calls.append(self, x)
 
 
 

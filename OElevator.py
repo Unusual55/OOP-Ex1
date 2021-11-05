@@ -39,3 +39,36 @@ class OElevator:
 
     def getid(self):
         return self.id
+
+    def getstate(self):
+        return self.state
+
+    def getdest(self):
+        return self.state
+
+    def getpos(self):
+        return self.pos
+
+    def goto(self, floor):
+        nextstate = 0
+        if(floor>self.pos):
+            nextstate = 1
+        elif(floor<self.pos):
+            nextstate = -1
+        self.state = nextstate
+        self.nextstop = floor
+
+    def stop(self, floor):
+        if (self.state==1):
+            if(self.pos<floor and floor<self.nextstop):
+                self.nextstop = floor
+            else:
+                print("Invalid stop action, the floor is not between position and destenation")
+        elif(self.state==-1):
+            if(self.pos>floor and floor>self.nextstop):
+                self.nextstop = floor
+            else:
+                print("Invalid stop action, the floor is not between position and destenation")
+        else:
+            print("Invalid stop action, stop is not available when the elevator is not moving")
+
