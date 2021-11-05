@@ -1,74 +1,74 @@
 class OElevator:
-    def __init__(self, id, min, max, open, close, start, stop, speed, state, pos, nextstop):
-        self.id = id
-        self.minFloor = min
-        self.maxFloor = max
-        self.openTime = open
-        self.closeTime = close
-        self.startTime = start
-        self.stopTime = stop
+    def __init__(self, elevatorID, speed, minFloor, maxFloor, closeTime, openTime, startTime, stopTime):
+        self.id = elevatorID
+        self.minFloor = minFloor
+        self.maxFloor = maxFloor
+        self.openTime = openTime
+        self.closeTime = closeTime
+        self.startTime = startTime
+        self.stopTime = stopTime
         self.speed = speed
-        self.tpf = (1/self.speed)
-        self.state = state
-        self.pos = pos
-        self.nextstop = nextstop
+        self.TPF = (1/self.speed)
+        self.state = None
+        self.pos = None
+        self.nextstop = None
 
-    def gettimeforopen(self):
+    def GetTimeForOpen(self):
         return self.openTime
 
-    def gettimeforclose(self):
+    def GetTimeForClose(self):
         return self.closeTime
 
-    def gettimeforstart(self):
+    def GetTimeForStart(self):
         return self.startTime
 
-    def gettimeforstop(self):
+    def GetTimeForStop(self):
         return self.stopTime
 
-    def getspeed(self):
+    def GetSpeed(self):
         return self.speed
 
-    def gettimeperfloor(self):
-        return self.tpf
+    def GetTimePerFloor(self):
+        return self.TPF
 
-    def getminfloor(self):
+    def GetMinFloor(self):
         return self.minFloor
 
-    def getmaxfloor(self):
+    def GetMaxFloor(self):
         return self.maxFloor
 
-    def getid(self):
+    def GetID(self):
         return self.id
 
-    def getstate(self):
+    def GetState(self):
         return self.state
 
-    def getdest(self):
-        return self.state
-
-    def getpos(self):
+    def GetPos(self):
         return self.pos
 
     def goto(self, floor):
-        nextstate = 0
-        if(floor>self.pos):
-            nextstate = 1
-        elif(floor<self.pos):
-            nextstate = -1
-        self.state = nextstate
+        # nextState = 0
+        # if(floor > self.pos):
+        #     nextState = 1
+        # elif(floor < self.pos):
+        #     nextState = -1
+        # self.state = nextState
+        self.state = 1 if floor > self.pos else (-1 if floor < self.pos else 0)
         self.nextstop = floor
 
     def stop(self, floor):
-        if (self.state==1):
-            if(self.pos<floor and floor<self.nextstop):
+        if (self.state == 1):
+            if(self.pos < floor and floor < self.nextstop):
                 self.nextstop = floor
             else:
-                print("Invalid stop action, the floor is not between position and destenation")
-        elif(self.state==-1):
-            if(self.pos>floor and floor>self.nextstop):
+                print(
+                    "Invalid stop action, the floor is not between position and destenation")
+        elif(self.state == -1):
+            if(self.pos > floor and floor > self.nextstop):
                 self.nextstop = floor
             else:
-                print("Invalid stop action, the floor is not between position and destenation")
+                print(
+                    "Invalid stop action, the floor is not between position and destenation")
         else:
-            print("Invalid stop action, stop is not available when the elevator is not moving")
-
+            print(
+                "Invalid stop action, stop is not available when the elevator is not moving")
