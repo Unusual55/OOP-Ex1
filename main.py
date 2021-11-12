@@ -1,14 +1,14 @@
 import sys
 import json
-from BuildingParser import BuildingParser
+from Building import Building
 
 jsonPath = './data/Ex1_input/Ex1_Buildings/B2.json'
 # csvPath = './data/Ex1_input/Ex1_Calls/Calls_a.csv'
 
 
 def main():
-    parser = BuildingParser(jsonPath)
-    print(json.dumps(parser.building, indent=4))
+    building = Building.parse_from_json(jsonPath)
+    print(json.dumps(building, indent=4))
     pass
 
 
