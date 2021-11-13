@@ -1,6 +1,9 @@
+import json
+
+
 class Elevator:
-    __elevator_fields = ['_id', '_speed', '_minFloor', '_maxFloor',
-                         '_closeTime', '_openTime', '_startTime', '_stopTime']
+    __elevator_fields = {'_id': 'elevator_id', '_speed': 'speed', '_minFloor': 'min_floor', '_maxFloor': 'max_floor',
+                         '_closeTime': 'close_time', '_openTime': 'open_time', '_startTime': 'start_time', '_stopTime': 'stop_time'}
 
     def __init__(self, elevator_id, speed, min_floor, max_floor, close_time, open_time, start_time, stop_time):
         self.elevator_id = elevator_id
@@ -12,14 +15,26 @@ class Elevator:
         self.start_time = start_time
         self.stop_time = stop_time
 
-    @staticmethod
-    def parse_elevator(elevator: dict):
-        Elevator.validate_elevator(elevator)
-        return Elevator(**[elevator[prop] for prop in Elevator.__elevator_fields])
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.to_json())
 
-    @staticmethod
-    def validate_elevator(elevator: dict):
-        properties = Elevator.__elevator_fields
+    def __str__(self):
+        return json.dumps(self, default=lambda o: o.to_json(), indent=4)
+
+    def __repr__(self):
+        return str(self.__dict__)
+
+    def to_json(self):
+        return {field: getattr(self, att) for field, att in Elevator.__elevator_fields.items()}
+
+    @classmethod
+    def parse_elevator(cls, elevator: dict):
+        cls.validate_elevator(elevator)
+        return cls(**{prop: elevator[jname] for (jname, prop) in cls.__elevator_fields.items()})
+
+    @classmethod
+    def validate_elevator(cls, elevator: dict):
+        properties = cls.__elevator_fields
         for prop in properties:
             if prop in elevator:
                 val = elevator[prop]
