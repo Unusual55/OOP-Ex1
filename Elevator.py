@@ -1,4 +1,12 @@
 import json
+from enum import IntEnum
+from Call import Call
+
+
+class Direction(IntEnum):
+    IDLE = 0  # When the elevator is idle the doors are open
+    UP = 1
+    DOWN = -1
 
 
 class Elevator:
@@ -7,13 +15,35 @@ class Elevator:
 
     def __init__(self, elevator_id, speed, min_floor, max_floor, close_time, open_time, start_time, stop_time):
         self.elevator_id = elevator_id
-        self.speed = speed
+        self.speed = speed  # Floors per second
         self.min_floor = min(min_floor, max_floor)
         self.max_floor = max(min_floor, max_floor)
         self.close_time = close_time
         self.open_time = open_time
         self.start_time = start_time
         self.stop_time = stop_time
+
+        self.position = 0
+        self.direction = Direction.IDLE
+
+        self.stops = []
+
+    def calc_future_position(self, time, direction):
+        # If the elevator is idle we want take into a account closing the doors and starting the elevator
+        if self.direction == Direction.IDLE:
+            time -= self.close_time + self.start_time
+        # distance = time * speed
+        return self.position + direction * (time * self.speed)
+
+    # Calculates the time it takes to get to a floor and get into the IDLE state
+    def calc_time_to_floor(self, floor):
+        t = abs(self.position - floor) / self.speed
+        if self.direction == Direction.IDLE:
+            t += self.close_time + self.start_time + self.stop_time + self.open_time
+        return t
+
+    # def calc_call_time(self, call: Call):
+    #     if
 
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.to_json())
