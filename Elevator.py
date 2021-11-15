@@ -27,8 +27,8 @@ class Elevator:
         self.position = 0
         self.direction = Direction.IDLE
 
-        self.up_calls = Route()
-        self.down_calls = Route()
+        self.up_stops = Route()
+        self.down_stops = Route()
 
     def calc_future_position(self, time, direction):
         # If the elevator is idle we want take into a account closing the doors and starting the elevator
@@ -43,13 +43,26 @@ class Elevator:
         if self.direction == Direction.IDLE:
             t += self.close_time + self.start_time + self.stop_time + self.open_time
         return t
-
+    
+    def calc_time_factor(self, call: Call):
+        time_factor = (abs(self.position - call.src) + abs(call.dst - call.src)) / self.speed + self.const_time() + self.calc_delay_factor(call)
+        if call.direction == Direction.UP:
+            return ()
+        pass
+    
+    def calc_delay_factor(self, call: Call, i):
+        
+        pass
+    
+    def const_time(self):
+        return self.close_time + self.open_time + self.start_time + self.stop_times
+    
     # def calc_call_time(self, call: Call):
     #     if
     
-    # def calc_route_time(self, test_stop = None):
-    #     return (len(self.up_calls) + len(self.down_calls)) * (self.close_time + self.start_time + self.)
-
+    # def calc_route(self, route: Route, test_stop = None):
+        # return 
+    
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.to_json())
 
