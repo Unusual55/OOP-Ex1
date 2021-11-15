@@ -1,6 +1,7 @@
 import json
 from enum import IntEnum
 from Call import Call
+from Route import Route
 
 
 class Direction(IntEnum):
@@ -26,7 +27,8 @@ class Elevator:
         self.position = 0
         self.direction = Direction.IDLE
 
-        self.stops = []
+        self.up_calls = Route()
+        self.down_calls = Route()
 
     def calc_future_position(self, time, direction):
         # If the elevator is idle we want take into a account closing the doors and starting the elevator
@@ -44,6 +46,9 @@ class Elevator:
 
     # def calc_call_time(self, call: Call):
     #     if
+    
+    # def calc_route_time(self, test_stop = None):
+    #     return (len(self.up_calls) + len(self.down_calls)) * (self.close_time + self.start_time + self.)
 
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.to_json())
