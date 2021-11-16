@@ -10,8 +10,8 @@ class Controller:
         self.calls_log = calls_log
         self.calls_data = self.calls_log[[
             'time', 'source', 'destination', 'allocated-elevator']]
-        self.calls = [Call(row["time"], row["source"], row["destination"])
-                      for _, row in self.calls_data.iterrows()]
+        self.calls = [Call(row["time"], row["source"], row["destination"], i)
+                      for i, row in self.calls_data.iterrows()]
         pass
 
     @classmethod

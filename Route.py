@@ -1,37 +1,36 @@
 from typing import Tuple
-import Call, Elevator, Node, copy
+from Call import Call
+from Node import Node, Type
+from Elevator import Elevator
+from copy import copy
+from Vector import Vector
 class Route:
-    def __init__(self, e: Elevator.Elevator) -> None:
-        self.call_pointers = [Node.Node, Node.Node]
-        self.timed_course = [Node.Node]
+    def __init__(self, e: Elevator) -> None:
+        self.call_pointers = [Vector]
+        self.timed_course = [Node]#we might need to create linkedlist of nodes so we can seperate the route data structure from the course
         self.stop_const = {'start_course': e.close_time + e.start_time, 'end_course': e.stop_time + e.open_time, 'full_break': e.open_time + e.close_time + e.start_time + e.stop_time}
         self.speed_const = {'speed': e.speed, 'tpf': 1/e.speed}
         self.count = 0
         
-    
-    def create_vector_node(self, c: Call.Call):
-        v1 = Node.Node(c.id, c.time, c.src, True)
-        v2 = Node.Node(c.id, 0, c.dst, False)
-        v1.set_pair(v2)
-        v2.set_pair(v1)
-        #calculate time to finish
-        vector = [v1, v2]
-        #self.call_pointers.insert(0, vector)
-        #not finished, need another support functions
-        return vector
-    
-    def add_vector_to_route(self, c: Call.Call):
+    def create_dummy_vectors(self):
+        return copy(self.call_pointers)
+
+    def add_vector_to_route(self, c: Call):
         pass
 
-    def Route_Offer(self, c: Call.Call):
-        pass
+    # def Route_Offer(self, c: Call):
+    #     pass
 
-    def route_optimal_now(self):
-        pass
+    # def route_optimal_now(self):
+    #     pass
 
-    @staticmethod
-    def reroute(course: list[Node.Node]):
-        pass
+    # def reroute(self, c: Call):
+    #     dummy_vectors = self.create_dummy_vectors()
+    #     v = Vector(c)
+    #     dummy_vectors.insert(0,v)
+    #     for v in dummy_vectors:
+    #         v.
+
 
     #This function calculates the time which take to this call to complete as well as how much delay factor will be caused if we add this call to the list
    # def easy_case_same_direction_pickup_time_calc(self, vector: list[Node.Node,Node.Node], pos: int):
@@ -49,10 +48,10 @@ class Route:
         # return stop_count + distance + link
 
     
-    def easy_case_same_inverse_direction_pickup_time_calc(self, vector: list[Node.Node, Node.Node]):
+    def easy_case_same_inverse_direction_pickup_time_calc(self, vec: Vector):
         pass
 
-    def hard_case_missed_floor_time_calc(self, vector: list[Node.Node, Node.Node]):
+    def hard_case_missed_floor_time_calc(self, vec: Vector):
         pass
 
     def get_sorted_nodelist(self):
