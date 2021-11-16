@@ -35,6 +35,7 @@ class Route:
 
     #This function calculates the time which take to this call to complete as well as how much delay factor will be caused if we add this call to the list
     def easy_case_same_diretion_up(self, pos: int, vec: Vector):
+        #TODO: after we have future position calculation, remove pos and use it to define pos
         inc_node = vec[0]
         src_node = vec[1]
         dst_node = vec[2]
@@ -60,6 +61,7 @@ class Route:
         while (dir and self.timed_course[i].floor >= src_node.floor) or ((not dir) and self.timed_course[i].floor <= src_node.floor):
             src_delay += 1
             i += 1
+
         while (dir and self.timed_course[i].floor >= dst_node.floor) or ((not dir) and self.timed_course[i].floor <= dst_node.floor):
             dst_delay += 1
             i += 1
@@ -84,8 +86,32 @@ class Route:
         delay_factor = (2*src_delay +dst_delay)*self.stop_const.get('full_break')
         return delay_factor + dist
 
-    def easy_case_same_inverse_direction_pickup_time_calc(self, vec: Vector):
-        pass
+    def easy_case_same_inverse_direction_pickup_time_calc(self, ,pos: int, vec: Vector):
+        inc_node = vec[0]
+        src_node = vec[1]
+        dst_node = vec[2]
+        src = src_node.floor
+        dst = dst_node.floor
+        inc_index = self.timed_course.index(inc_node)
+        dir = src-pos > 0
+        i = inc_index
+        src_delay = 0
+        while (dir and self.timed_course[i].floor >= src_node.floor) or ((not dir) and self.timed_course[i].floor <= src_node.floor):
+            src_delay += 1
+            i += 1
+        dst_delay = 0
+        turn = self.find_turning_point(i)
+        while i < turn:
+            i += 1
+            dst_delay += 1
+        dir = not dir
+        while (dir and self.timed_course[i].floor >= dst_node.floor) or ((not dir) and self.timed_course[i].floor <= dst_node.floor):
+            dst_delay += 1
+            i += 1
+        dist = (abs(src-pos)+abs(turn-src)+abs(turn-dest))*self.speed_const.get('tpf')
+        return dist+ (2*src + dst_delay + 1) * self.stop_const.get('full_break')
+        
+
 
     def hard_case_missed_floor_time_calc(self, vec: Vector):
         pass
