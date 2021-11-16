@@ -98,7 +98,16 @@ class Route:
         return sorted(li, key=lambda x: x.time, reverse=True)
 
     def find_turning_point(self, i: int):
-        pass
+        if len(self.timed_course) < 2:
+            return -1
+        calls = self.timed_course[i:]
+        sign = math.copysign(1.0, calls[0].floor - calls[1].floor)
+        for j in range(1, len(calls)-1):
+            s = math.copysign(1.0, calls[j].floor - calls[j+1].floor)
+            if s * sign < 0:
+                return i + j + 1
+            sign = s
+        return -1
 
     # def __init__(self, *stops):
     #     self.stops = [c for c in stops]
