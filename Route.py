@@ -86,7 +86,7 @@ class Route:
         delay_factor = (2*src_delay +dst_delay)*self.stop_const.get('full_break')
         return delay_factor + dist
 
-    def easy_case_same_inverse_direction_pickup_time_calc(self, ,pos: int, vec: Vector):
+    def easy_case_same_inverse_direction_pickup_time_calc(self, pos: int, vec: Vector):
         inc_node = vec[0]
         src_node = vec[1]
         dst_node = vec[2]
@@ -108,7 +108,7 @@ class Route:
         while (dir and self.timed_course[i].floor >= dst_node.floor) or ((not dir) and self.timed_course[i].floor <= dst_node.floor):
             dst_delay += 1
             i += 1
-        dist = (abs(src-pos)+abs(turn-src)+abs(turn-dest))*self.speed_const.get('tpf')
+        dist = (abs(src-pos)+abs(turn-src)+abs(turn-dst))*self.speed_const.get('tpf')
         return dist+ (2*src + dst_delay + 1) * self.stop_const.get('full_break')
         
 
