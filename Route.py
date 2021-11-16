@@ -4,6 +4,7 @@ from Node import Node, Type
 from Elevator import Elevator
 from copy import copy
 from Vector import Vector
+import math
 class Route:
     def __init__(self, e: Elevator) -> None:
         self.call_pointers = []
@@ -33,21 +34,56 @@ class Route:
 
 
     #This function calculates the time which take to this call to complete as well as how much delay factor will be caused if we add this call to the list
-    def easy_case_same_direction_pickup_time_calc(self, vector: list[Node.Node,Node.Node], pos: int):
-        srcnode = vector[0]
-        dstnode = vector[1]
-        srcindex = self.timed_course.index(vector[0])
-        dstindex = self.timed_course.index(vector[1])
-        stop_count = (dstindex-srcindex)* self.speed_const.get('full_break')
-        checker = dstindex + 1
-        while dstnode.time< self.timed_course[checker].time:
-            checker+=1
-        stop_count += 2*self.speed_const.get('full_break')
-        distance = (abs(srcnode.floor-pos)+abs(dstnode.floor-srcnode.floor))*self.speed_const.get('tpf')
-        link = self.stop_const.get('full_break')
-        return stop_count + distance + link
+    def easy_case_same_diretion_up(self, pos: int, vec: Vector):
+        inc_node = vec[0]
+        src_node = vec[1]
+        dst_node = vec[2]
+        src = src_node.floor
+        dst = dst_node.floor
+        dist = (abs(src-pos)+abs(dst-src))*self.speed_const.get('tpf') + self.stop_const.get('full_break')
+        src_delay = 0
+        dst_delay = 0
+        i = 0
+        dir = src-pos>0
+        dire = math.copysign(1, src - pos)
+        while i<len(self.timed_course) and inc_node.time>self.timed_course[i].time:
+            i+=1
+        inc_index = i
+        
+        # while self.timed_course[i].floor >= dire*src_node.floor:
+        #     src_delay += 1
+        #     i += 1
+        # while self.timed_course[i].floor >= dire*dst_node.floor:
+        #     dst_delay += 1
+        #     i += 1
+        
+        while (dir and self.timed_course[i].floor >= src_node.floor) or ((not dir) and self.timed_course[i].floor <= src_node.floor):
+            src_delay += 1
+            i += 1
+        while (dir and self.timed_course[i].floor >= dst_node.floor) or ((not dir) and self.timed_course[i].floor <= dst_node.floor):
+            dst_delay += 1
+            i += 1
 
-    
+        #region
+        # if dir:
+        #     while self.timed_course[i].floor >= src_node.floor:
+        #         src_delay += 1
+        #         i += 1
+        #     while self.timed_course[i].floor >= dst_node.floor:
+        #         dst_delay += 1
+        #         i += 1
+        # else:
+        #      while self.timed_course[i].floor <= src_node.floor:
+        #         src_delay += 1
+        #         i += 1
+        #      while self.timed_course[i].floor <= dst_node.floor:
+        #         dst_delay += 1
+        #         i += 1
+        #endregion
+
+        delay_factor = (2*src_delay +dst_delay)*self.stop_const.get('full_break')
+        return delay_factor + dist
+
     def easy_case_same_inverse_direction_pickup_time_calc(self, vec: Vector):
         pass
 
