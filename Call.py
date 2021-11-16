@@ -1,4 +1,4 @@
-
+import math
 
 class Call:
     def init__(self, time, src, dst):
@@ -6,7 +6,7 @@ class Call:
         self.src = src
         self.dst = dst
         self.allocated_elevator = None
-        self.direction = dst - src
+        self.direction = math.copysign(1, dst - src)
         self.id = 0
         pass
 
