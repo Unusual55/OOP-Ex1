@@ -1,5 +1,7 @@
 import pandas as pd
+from Building import Building
 from Call import Call
+from Elevator import Elevator
 
 
 class Controller:
@@ -10,10 +12,24 @@ class Controller:
         self.calls_log = calls_log
         self.calls_data = self.calls_log[[
             'time', 'source', 'destination', 'allocated-elevator']]
-        self.calls = [Call(row["time"], row["source"], row["destination"])
-                      for _, row in self.calls_data.iterrows()]
-        pass
+
+        self.calls = [Call(row["time"], row["source"], row["destination"], i)
+                      for i, row in self.calls_data.iterrows()]
+        
+        self.allocated_elevators = [-1]*len(self.calls)
+
+    def allocate_elevator(self, call_id: int, elevator: Elevator):
+        self.allocated_elevators[call_id] = elevator.elevator_id
+    
+    def allocate(self, building: Building):
+        for call in reversed(self.calls):
+            elevator = building.get_elevator_for_call(call)
+            self.allocate_elevator(call.call_id, elevator)
 
     @classmethod
     def from_csv(cls, file_name: str):
         return cls(pd.read_csv(file_name, names=cls.__columns_headers))
+    
+    def to_csv(self, file_name: str):
+        self.calls_log["allocated-elevator"] = self.allocated_elevators
+        self.calls_log.to_csv(file_name, index=False, header=False)
