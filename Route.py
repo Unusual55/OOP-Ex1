@@ -1,7 +1,7 @@
 from typing import Tuple
 from Call import Call
 from Node import Node, Type
-from Elevator import Elevator
+from Elevator import Direction, Elevator
 from copy import copy
 from Vector import Vector
 import math
@@ -44,7 +44,7 @@ class Route:
 
 
     #This function calculates the time which take to this call to complete as well as how much delay factor will be caused if we add this call to the list
-    def easy_case_same_diretion_up(self, pos: int, vec: Vector):
+    def easy_case_same_diretion(self, pos: int, vec: Vector):
         #TODO: after we have future position calculation, remove pos and use it to define pos
         inc_node = vec.incoming
         src_node = vec.src
@@ -122,9 +122,37 @@ class Route:
         return dist+ (2*src + dst_delay + 1) * self.stop_const.get('full_break')
         
 
-
-    def hard_case_missed_floor_time_calc(self, vec: Vector):
-        pass
+    def hard_case_missed_floor_time_calc(self, vec: Vector, pos):
+        inc_node = vec.incoming
+        src_node = vec.src
+        dst_node = vec.dst
+        src = src_node.floor
+        dst = dst_node.floor
+        inc_index = self.timed_course.index(inc_node)
+        dir = src-pos > 0
+        i = inc_index
+        src_delay = 0
+        dst_delay = 0
+        turn1 = self.find_turning_point(i)
+        while i < turn1:
+            i += 1
+            src_delay += 1
+        dir = src - pos > 0
+        while (dir and self.timed_course[i].floor >= src_node.floor) or ((not dir) and self.timed_course[i].floor <= src_node.floor):
+            src_delay += 1
+            i += 1
+        turn2 = self.find_turning_point(i)
+        while i < turn2:
+            i += 1
+            dst_delay += 1
+        while (dir and self.timed_course[i].floor >= dst_node.floor) or ((not dir) and self.timed_course[i].floor <= dst_node.floor):
+            dst_delay += 1
+            i += 1
+        turn_floor1 = self.timed_course[turn1].floor
+        turn_floor2 = self.timed_course[turn2].floor
+        dist = (abs(turn_floor1-pos)+abs(turn_floor1-src)+abs(src-turn_floor2)+abs()+abs(dst-turn_floor2))*self.speed_const.get('tpf')
+        delay_factor = (2*src_delay + dst_delay)*self.stop_const.get('full_break')
+        return dist + delay_factor
 
     def get_sorted_nodelist(self):
         li = [] 
@@ -144,6 +172,25 @@ class Route:
                 return i + j + 1
             sign = s
         return -1
+
+    def get_state(self, incoming: Node):
+        inc_index = self.timed_course.index(incoming)
+        if inc_index == len(self.timed_course)-1:
+            return Direction.IDLE
+        i = inc_index
+        while i-1>0 and self.timed_course[i].type == Type.incoming:
+            i -=1
+        last_Stop_floor = self.timed_course[i].floor
+        j = inc_index
+        while j+1< len(self.timed_course) and self.timed_course[j].type == Type.incoming:
+            j += 1
+        next_stop_floor = self.timed_course[j].floor
+        if next_stop_floor > last_Stop_floor:
+            return Direction.UP
+        return Direction.DOWN
+        not_incoming = [n for n in self.timed_course if n.type != Type.incoming]
+        last_stop_node = not_incoming[-1] # Get the last non incoming node in the route list
+        next_stop_node = not_incoming[0] # Get the last non incoming node in the route list
 
     # def __init__(self, *stops):
     #     self.stops = [c for c in stops]
