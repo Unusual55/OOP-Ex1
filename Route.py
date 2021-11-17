@@ -12,7 +12,13 @@ class Route:
         self.stop_const = {'start_course': e.close_time + e.start_time, 'end_course': e.stop_time + e.open_time, 'full_break': e.open_time + e.close_time + e.start_time + e.stop_time}
         self.speed_const = {'speed': e.speed, 'tpf': 1/e.speed}
         self.count = 0
+    
+    def case_check(self, vec: Vector):
+        next_dir = self.get_state(vec.incoming)
+        curr_dir = Direction(math.copysign(1.0, vec.src.floor - vec.dst.floor))
         
+        pass
+    
     def create_dummy_vectors(self):
         return copy(self.call_pointers)
 
