@@ -188,9 +188,9 @@ class Route:
         if next_stop_floor > last_Stop_floor:
             return Direction.UP
         return Direction.DOWN
-        not_incoming = [n for n in self.timed_course if n.type != Type.incoming]
-        last_stop_node = not_incoming[-1] # Get the last non incoming node in the route list
-        next_stop_node = not_incoming[0] # Get the last non incoming node in the route list
+        # not_incoming = [n for n in self.timed_course if n.type != Type.incoming]
+        # last_stop_node = not_incoming[-1] # Get the last non incoming node in the route list
+        # next_stop_node = not_incoming[0] # Get the last non incoming node in the route list
 
     # def __init__(self, *stops):
     #     self.stops = [c for c in stops]
