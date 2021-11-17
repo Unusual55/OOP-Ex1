@@ -50,14 +50,6 @@ class Elevator:
     def const_time(self):
         return self.close_time + self.open_time + self.start_time + self.stop_times
     
-    def future_position(self, node: Node):
-        next_time = node.time
-        last_stop_node = [n for n in self.route if n.type != Type.incoming][-1] # Get the last non incoming node in the route list
-        curr_time = last_stop_node.time
-        
-        dt = abs(next_time - curr_time)
-        dt += self.const_time() # Add the time it takes to close the doors and start the elevator
-        return self.position + math.copysign(1.0, self.position - node.floor) * (dt * self.speed)
     
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.to_json())
