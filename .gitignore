@@ -1,6 +1,8 @@
 .idea/
 .vscode/
 data/
+Ex1_checker_V1.2_obf.jar
+out.*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
