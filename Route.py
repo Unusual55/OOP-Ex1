@@ -103,12 +103,13 @@ class Route:
             src_delay += 1
             i += 1
         src_index = i
+        src_time = src_delay*self.speed_const.get('full_break')+abs(src-pos)*self.speed_const.get('tpf') + self.stop_const.get('end_course')
         while (dir and self.timed_course[i].floor >= dst_node.floor) or ((not dir) and self.timed_course[i].floor <= dst_node.floor):
             dst_delay += 1
             i += 1
         dst_index = i
         delay_factor = (2*src_delay +dst_delay)*self.stop_const.get('full_break')
-        return (src_index, dst_index, delay_factor + dist)
+        return (src_index, dst_index, src_time , delay_factor + dist)
 
     def easy_case_same_inverse_direction_pickup_time_calc(self, vec: Vector):
         pos = self.future_position(vec.incoming)
@@ -125,6 +126,7 @@ class Route:
             src_delay += 1
             i += 1
         src_index = i
+        src_time = src_delay*self.speed_const.get('full_break')+abs(src-pos)*self.speed_const.get('tpf') + self.stop_const.get('end_course')
         dst_delay = 0
         turn = self.find_turning_point(i)
         while i < turn:
@@ -137,7 +139,7 @@ class Route:
         dst_index = i
         dist = (abs(src-pos)+abs(turn-src)+abs(turn-dst))*self.speed_const.get('tpf')
         dist += (2*src + dst_delay + 1) * self.stop_const.get('full_break')
-        return(src_index, dst_index, dist)
+        return(src_index, dst_index, src_time , dist)
         
     def hard_case_missed_floor_time_calc(self, vec: Vector, pos):
         pos = self.future_position(vec.incoming)
@@ -170,9 +172,10 @@ class Route:
         dst_index = i
         turn_floor1 = self.timed_course[turn1].floor
         turn_floor2 = self.timed_course[turn2].floor
+        src_time =(src_delay*self.stop_const.get('full_break')+(abs(turn1-pos)+abs(turn1-src))*self.speed_const.get('tpf')+self.stop_const.get('end_course'))
         dist = (abs(turn_floor1-pos)+abs(turn_floor1-src)+abs(src-turn_floor2)+abs()+abs(dst-turn_floor2))*self.speed_const.get('tpf')
         delay_factor = (2*src_delay + dst_delay)*self.stop_const.get('full_break')
-        return (src_index, dst_index, dist + delay_factor)
+        return (src_index, dst_index, src_time , dist + delay_factor)
 
     def get_sorted_nodelist(self):
         li = [] 
@@ -210,7 +213,7 @@ class Route:
         return Direction.DOWN
 
     def get_insertion_index(self, vec: Vector):
-        case = 0
+        case = self.case_check(vec)
         if case == 1:
             tup = self.easy_case_same_diretion(vec)
         elif case == 2:
