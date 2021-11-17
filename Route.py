@@ -18,6 +18,16 @@ class Route:
 
     def add_vector_to_route(self, c: Call):
         pass
+    
+    def future_position(self, incoming_node: Node):
+        next_time = incoming_node.time
+        last_stop_node = [n for n in self.timed_course if n.type != Type.incoming][-1] # Get the last non incoming node in the route list
+        curr_time = last_stop_node.time
+        
+        dt = abs(next_time - curr_time)
+        dt -= self.stop_const["start_course"] # Add the time it takes to close the doors and start the elevator
+        dir = math.copysign(1.0, last_stop_node.floor - incoming_node.src.floor)
+        return self.last_stop_node.floor + dir * (dt * self.speed_const["speed"])
 
     # def Route_Offer(self, c: Call):
     #     pass
