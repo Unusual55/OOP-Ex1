@@ -50,8 +50,8 @@ class Route:
                     else: 
                         return 2
             
-            
-        
+    def calc_route_time(self):
+        return sum([v.dst.time - v.incoming.time for v in self.call_pointers])
     
     def create_dummy_vectors(self):
         return copy(self.call_pointers)
