@@ -3,8 +3,8 @@ import json
 from Building import Building
 from Controller import Controller
 from Elevator import Elevator
-jsonPath = './data/Ex1_input/Ex1_Buildings/B2.json'
-csvPath = './data/Ex1_input/Ex1_Calls/Calls_a.csv'
+jsonPath = './data/Ex1_input/Ex1_Buildings/B5.json'
+csvPath = './data/Ex1_input/Ex1_Calls/Calls_d.csv'
 
 debuging = True
 
@@ -12,6 +12,7 @@ def main():
     building = Building.parse_from_json(jsonPath)
     controller = Controller.from_csv(csvPath)
     controller.allocate(building)
+    print(controller.allocated_elevators)
     pass
 
 

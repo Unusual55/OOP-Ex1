@@ -33,4 +33,7 @@ class Node:
         else:
             self.time += d
     
+    def __eq__(self, o: object) -> bool:
+        return self.id == o.id and self.time == o.time and self.floor == o.floor and self.type == o.type
+    
 

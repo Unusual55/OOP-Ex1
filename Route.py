@@ -14,10 +14,10 @@ class Route:
         self.count = 0
     
     # TODO: add case if elev_pos == src.floor
-    def case_check(self, vec: Vector):
-        elev_dir = self.get_state(vec.incoming)
+    def case_check(self, vec: Vector, course: list):
+        elev_dir = self.get_state(vec.incoming, course)
         call_dir = math.copysign(1.0, vec.src.floor - vec.dst.floor)
-        elev_pos = self.future_position(vec.incoming)
+        elev_pos = self.future_position(vec.incoming, course)
         
         # Can we pickup the call?
         if elev_dir > 0:
@@ -49,30 +49,33 @@ class Route:
                         return 1
                     else: 
                         return 2
+                    
     @staticmethod        
-    def calc_route_time(self, vect: list):
+    def calc_route_time(vect: list):
         return sum([v.dst.time - v.incoming.time for v in vect])
     
     def create_dummy_vectors(self):
-        return copy(self.call_pointers)
+        return [copy(v) for v in self.call_pointers]
+        # return copy(self.call_pointers)
 
     def create_basic_course(self, vec:Vector):
-        for vec in self.call_pointers:
-            vec.reset()
         course = []
-        course.append(vec.incoming)
-        for vec in self.call_pointers:
-            course.append(vec.incoming)
+        course.insert(0,vec.incoming)
+        if len(self.call_pointers)>=1:   
+            for i in range(len(self.call_pointers)):
+                course.append(self.call_pointers[i].incoming)
         return course
 
     def add_vector_to_route(self, vec: Vector, course: list):
-        info = self.get_insertion_index(vec)
-        for i in range(info[1],info[2]):
-            course[i].increase_by(self.speed_const)
-        for i in range(info[2]):
-            course[i].increase_by(self.speed_const)
-        course.insert(info[0], info[2])
-        course.inser(info[1], info[3])
+        info = self.get_insertion_index(vec, course)
+        for i in range(info[0],info[1]):
+            course[i].increase_by_split_cases(self.stop_const.get('full_break'))
+        for i in range(info[1]):
+            course[i].increase_by_split_cases(self.stop_const.get('full_break'))
+        vec.src.time += info[2]
+        vec.dst.time += info[3]
+        course.insert(info[0], vec.src)
+        course.insert(info[1], vec.dst)
     
     def create_dummy_course(self, c: Call):
         course = self.create_basic_course(Vector(c))
@@ -81,7 +84,7 @@ class Route:
         vectors.insert(0, vec)
         for vector in vectors:
             self.add_vector_to_route(vector, course)
-        return (course, vectors, Route.calc_route_time(self, vectors))
+        return (course, vectors, Route.calc_route_time(vectors))
 
     def get_offer(self, c: Call):
         return self.create_dummy_course(c)[2]
@@ -92,20 +95,20 @@ class Route:
         self.call_pointers = tup[1]
 
 
-    def future_position(self, incoming_node: Node):
-        state = self.get_state(incoming_node)
-        inc_index = self.timed_course.index(incoming_node)
+    def future_position(self, incoming_node: Node, course: list):
+        state = self.get_state(incoming_node, course)
+        inc_index = course.index(incoming_node)
         i = inc_index
-        while i-1>0 and self.timed_course[i-1].type == Type.incoming:
+        while i-1>0 and course[i-1].type == Type.incoming:
             i -= 1
-        last_floor = self.timed_course[i].floor
+        last_floor = course[i].floor
         if state == 0:
             return last_floor
         next_time = incoming_node.time
-        curr_time = self.timed_course[i].time
+        curr_time = course[i].time
         dt = abs(next_time - curr_time)
-        dt -= self.stop_const["start_course"] # Add the time it takes to close the doors and start the elevator
-        return self.last_stop_node.floor + state * (dt * self.speed_const["speed"])
+        dt -= self.stop_const.get("start_course") # Add the time it takes to close the doors and start the elevator
+        return last_floor + state * (dt * self.speed_const.get("speed"))
 
     # def reroute(self, c: Call):
     #     dummy_vectors = self.create_dummy_vectors()
@@ -116,8 +119,8 @@ class Route:
 
 
     #This function calculates the time which take to this call to complete as well as how much delay factor will be caused if we add this call to the list
-    def easy_case_same_diretion(self, vec: Vector):
-        pos = self.future_position(vec.incoming)
+    def easy_case_same_diretion(self, vec: Vector, course: list):
+        pos = self.future_position(vec.incoming, course)
         inc_node = vec.incoming
         src_node = vec.src
         dst_node = vec.dst
@@ -129,44 +132,44 @@ class Route:
         i = 0
         dir = src-pos>0
         dire = math.copysign(1, src - pos)
-        while i<len(self.timed_course) and inc_node.time>self.timed_course[i].time:
+        while i<len(course) and inc_node.time>course[i].time:
             i+=1
         inc_index = i    
-        while (dir and self.timed_course[i].floor >= src_node.floor) or ((not dir) and self.timed_course[i].floor <= src_node.floor):
+        while i < len(course) and ((dir and course[i].floor >= src_node.floor) or ((not dir) and course[i].floor <= src_node.floor)):
             src_delay += 1
             i += 1
         src_index = i
-        src_time = src_delay*self.speed_const.get('full_break')+abs(src-pos)*self.speed_const.get('tpf') + self.stop_const.get('end_course')
-        while (dir and self.timed_course[i].floor >= dst_node.floor) or ((not dir) and self.timed_course[i].floor <= dst_node.floor):
+        src_time = src_delay*self.stop_const.get('full_break')+abs(src-pos)*self.speed_const.get('tpf') + self.stop_const.get('end_course')
+        while i < len(course) and ((dir and course[i].floor >= dst_node.floor) or ((not dir) and course[i].floor <= dst_node.floor)):
             dst_delay += 1
             i += 1
         dst_index = i
         delay_factor = (2*src_delay +dst_delay)*self.stop_const.get('full_break')
         return (src_index, dst_index, src_time , delay_factor + dist)
 
-    def easy_case_inverse_direction(self, vec: Vector):
-        pos = self.future_position(vec.incoming)
+    def easy_case_inverse_direction(self, vec: Vector, course: list):
+        pos = self.future_position(vec.incoming, course)
         inc_node = vec.incoming
         src_node = vec.src
         dst_node = vec.dst
         src = src_node.floor
         dst = dst_node.floor
-        inc_index = self.timed_course.index(inc_node)
+        inc_index = course.index(inc_node)
         dir = src-pos > 0
         i = inc_index
         src_delay = 0
-        while (dir and self.timed_course[i].floor >= src_node.floor) or ((not dir) and self.timed_course[i].floor <= src_node.floor):
+        while i < len(course) and ((dir and course[i].floor >= src_node.floor) or ((not dir) and course[i].floor <= src_node.floor)):
             src_delay += 1
             i += 1
         src_index = i
-        src_time = src_delay*self.speed_const.get('full_break')+abs(src-pos)*self.speed_const.get('tpf') + self.stop_const.get('end_course')
+        src_time = src_delay*self.stop_const.get('full_break')+abs(src-pos)*self.speed_const.get('tpf') + self.stop_const.get('end_course')
         dst_delay = 0
-        turn = self.find_turning_point(i)
+        turn = self.find_turning_point(i, course)
         while i < turn:
             i += 1
             dst_delay += 1
         dir = not dir
-        while (dir and self.timed_course[i].floor >= dst_node.floor) or ((not dir) and self.timed_course[i].floor <= dst_node.floor):
+        while i < len(course) and ((dir and course[i].floor >= dst_node.floor) or ((not dir) and course[i].floor <= dst_node.floor)):
             dst_delay += 1
             i += 1
         dst_index = i
@@ -174,39 +177,39 @@ class Route:
         dist += (2*src + dst_delay + 1) * self.stop_const.get('full_break')
         return(src_index, dst_index, src_time , dist)
         
-    def hard_case_missed_floor(self, vec: Vector, pos):
-        pos = self.future_position(vec.incoming)
+    def hard_case_missed_floor(self, vec: Vector, course: list):
+        pos = self.future_position(vec.incoming, course)
         inc_node = vec.incoming
         src_node = vec.src
         dst_node = vec.dst
         src = src_node.floor
         dst = dst_node.floor
-        inc_index = self.timed_course.index(inc_node)
+        inc_index = course.index(inc_node)
         dir = src-pos > 0
         i = inc_index
         src_delay = 0
         dst_delay = 0
-        turn1 = self.find_turning_point(i)
+        turn1 = self.find_turning_point(i, course)
         while i < turn1:
             i += 1
             src_delay += 1
         dir = src - pos > 0
-        while (dir and self.timed_course[i].floor >= src_node.floor) or ((not dir) and self.timed_course[i].floor <= src_node.floor):
+        while i < len(course) and ((dir and course[i].floor >= src_node.floor) or ((not dir) and course[i].floor <= src_node.floor)):
             src_delay += 1
             i += 1
         src_index = i
-        turn2 = self.find_turning_point(i)
+        turn2 = self.find_turning_point(i, course)
         while i < turn2:
             i += 1
             dst_delay += 1
-        while (dir and self.timed_course[i].floor >= dst_node.floor) or ((not dir) and self.timed_course[i].floor <= dst_node.floor):
+        while i < len(course) and ((dir and course[i].floor >= dst_node.floor) or ((not dir) and course[i].floor <= dst_node.floor)):
             dst_delay += 1
             i += 1
         dst_index = i
-        turn_floor1 = self.timed_course[turn1].floor
-        turn_floor2 = self.timed_course[turn2].floor
+        turn_floor1 = course[turn1].floor
+        turn_floor2 = course[turn2].floor
         src_time =(src_delay*self.stop_const.get('full_break')+(abs(turn1-pos)+abs(turn1-src))*self.speed_const.get('tpf')+self.stop_const.get('end_course'))
-        dist = (abs(turn_floor1-pos)+abs(turn_floor1-src)+abs(src-turn_floor2)+abs()+abs(dst-turn_floor2))*self.speed_const.get('tpf')
+        dist = (abs(turn_floor1-pos)+abs(turn_floor1-src)+abs(src-turn_floor2)+abs(dst-turn_floor2))*self.speed_const.get('tpf')
         delay_factor = (2*src_delay + dst_delay)*self.stop_const.get('full_break')
         return (src_index, dst_index, src_time , dist + delay_factor)
 
@@ -217,10 +220,10 @@ class Route:
             li.append(i[1])
         return sorted(li, key=lambda x: x.time, reverse=True)
 
-    def find_turning_point(self, i: int):
-        if len(self.timed_course) < 2:
+    def find_turning_point(self, i: int, course: list):
+        calls = course[i:]
+        if len(calls) < 2:
             return -1
-        calls = self.timed_course[i:]
         sign = math.copysign(1.0, calls[0].floor - calls[1].floor)
         for j in range(1, len(calls)-1):
             s = math.copysign(1.0, calls[j].floor - calls[j+1].floor)
@@ -229,30 +232,30 @@ class Route:
             sign = s
         return -1
 
-    def get_state(self, incoming: Node):
-        inc_index = self.timed_course.index(incoming)
-        if inc_index == len(self.timed_course)-1:
+    def get_state(self, incoming: Node, course: list):
+        inc_index = course.index(incoming)
+        if inc_index == len(course)-1:
             return Direction.IDLE
         i = inc_index
-        while i-1>0 and self.timed_course[i].type == Type.incoming:
+        while i-1>0 and course[i].type == Type.incoming:
             i -=1
-        last_Stop_floor = self.timed_course[i].floor
+        last_Stop_floor = course[i].floor
         j = inc_index
-        while j+1< len(self.timed_course) and self.timed_course[j].type == Type.incoming:
+        while j+1< len(course) and course[j].type == Type.incoming:
             j += 1
-        next_stop_floor = self.timed_course[j].floor
+        next_stop_floor = course[j].floor
         if next_stop_floor > last_Stop_floor:
             return Direction.UP
         return Direction.DOWN
 
-    def get_insertion_index(self, vec: Vector):
-        case = self.case_check(vec)
+    def get_insertion_index(self, vec: Vector, course: list):
+        case = self.case_check(vec, course)
         if case == 1:
-            tup = self.easy_case_same_diretion(vec)
+            tup = self.easy_case_same_diretion(vec, course)
         elif case == 2:
-            tup = self.easy_case_inverse_direction(vec)
+            tup = self.easy_case_inverse_direction(vec, course)
         else:
-            tup = self.hard_case_missed_floor(vec)
+            tup = self.hard_case_missed_floor(vec, course)
         return tup
         
     # # TODO: We don't consider if the stop already exists in the stops list, this could cause problems since the elevator would have the floor multiple times

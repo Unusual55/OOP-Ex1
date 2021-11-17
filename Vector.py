@@ -14,5 +14,5 @@ class Vector:
         self.dst.set_connection_src(self.src)
     
     def reset(self):
-        self.src.time = -1
-        self.dst.time = -1
+        self.src.time = self.incoming.time
+        self.dst.time = self.incoming.time

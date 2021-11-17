@@ -19,8 +19,8 @@ class Controller:
         
         self.allocated_elevators = [-1]*len(self.calls)
 
-    def allocate_elevator(self, call_id: int, elevator: Elevator):
-        self.allocated_elevators[call_id] = elevator.elevator_id
+    def allocate_elevator(self, call_id: int, elevator_id: int):
+        self.allocated_elevators[call_id] = elevator_id
     
     def allocate(self, building: Building):
         for call in reversed(self.calls):
