@@ -29,7 +29,7 @@ class Elevator:
         self.position = 0
         self.direction = Direction.IDLE
 
-        self.route = []
+        self.route = Route(self)
         # self.up_stops = Route()
         # self.down_stops = Route()
 

@@ -2,7 +2,8 @@ import pandas as pd
 from Building import Building
 from Call import Call
 from Elevator import Elevator
-
+from Route import Route
+import math
 
 class Controller:
     __columns_headers = ['elevator-call', 'time', 'source',
@@ -23,8 +24,15 @@ class Controller:
     
     def allocate(self, building: Building):
         for call in reversed(self.calls):
-            elevator = building.get_elevator_for_call(call)
-            self.allocate_elevator(call.call_id, elevator)
+            m = math.inf
+            id = -1
+            for elevator in building.elevators:
+                t = elevator.route.get_offer(call)
+                if t < m:
+                    m = t
+                    id = elevator.elevator_id
+            building.elevators[id].route.set_new_route(call)
+            self.allocate_elevator(call.id, id)
 
     @classmethod
     def from_csv(cls, file_name: str):

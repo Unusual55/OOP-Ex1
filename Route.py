@@ -1,10 +1,10 @@
-from typing import Tuple
 from Call import Call
 from Node import Node, Type
 from Elevator import Direction, Elevator
 from copy import copy
 from Vector import Vector
 import math
+
 class Route:
     def __init__(self, e: Elevator) -> None:
         self.call_pointers = []
@@ -49,9 +49,9 @@ class Route:
                         return 1
                     else: 
                         return 2
-            
-    def calc_route_time(self):
-        return sum([v.dst.time - v.incoming.time for v in self.call_pointers])
+    @staticmethod        
+    def calc_route_time(self, vect: list):
+        return sum([v.dst.time - v.incoming.time for v in vect])
     
     def create_dummy_vectors(self):
         return copy(self.call_pointers)
@@ -81,7 +81,16 @@ class Route:
         vectors.insert(0, vec)
         for vector in vectors:
             self.add_vector_to_route(vector, course)
-        
+        return (course, vectors, Route.calc_route_time(self, vectors))
+
+    def get_offer(self, c: Call):
+        return self.create_dummy_course(c)[2]
+
+    def set_new_route(self, c: Call):
+        tup = self.create_dummy_course(c)
+        self.timed_course = tup[0]
+        self.call_pointers = tup[1]
+
 
     def future_position(self, incoming_node: Node):
         state = self.get_state(incoming_node)
