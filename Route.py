@@ -12,7 +12,47 @@ class Route:
         self.stop_const = {'start_course': e.close_time + e.start_time, 'end_course': e.stop_time + e.open_time, 'full_break': e.open_time + e.close_time + e.start_time + e.stop_time}
         self.speed_const = {'speed': e.speed, 'tpf': 1/e.speed}
         self.count = 0
+    
+    # TODO: add case if elev_pos == src.floor
+    def case_check(self, vec: Vector):
+        elev_dir = self.get_state(vec.incoming)
+        call_dir = math.copysign(1.0, vec.src.floor - vec.dst.floor)
+        elev_pos = self.future_position(vec.incoming)
         
+        # Can we pickup the call?
+        if elev_dir > 0:
+            if elev_pos < vec.src.floor:
+                if vec.src.floor < vec.dst.floor:
+                    return 1
+                else:
+                    return 2
+            else:
+                return 3
+        elif elev_dir < 0:
+            if elev_pos > vec.src.floor:
+                if vec.src.floor > vec.dst.floor:
+                    return 1
+                else:
+                    return 2
+            else:
+                return 3
+        else:
+            if call_dir > 0:
+                if elev_pos < vec.src.floor:
+                    if vec.src.floor < vec.dst.floor:
+                        return 1
+                    else:
+                        return 2
+            else:
+                if elev_pos > vec.src.floor:
+                    if vec.src.floor>vec.dst.floor:
+                        return 1
+                    else: 
+                        return 2
+            
+            
+        
+    
     def create_dummy_vectors(self):
         return copy(self.call_pointers)
 
