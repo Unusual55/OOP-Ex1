@@ -50,15 +50,36 @@ class Route:
                     else: 
                         return 2
             
-            
-        
-    
     def create_dummy_vectors(self):
         return copy(self.call_pointers)
 
-    def add_vector_to_route(self, c: Call):
-        pass
+    def create_basic_course(self, vec:Vector):
+        for vec in self.call_pointers:
+            vec.reset()
+        course = []
+        course.append(vec.incoming)
+        for vec in self.call_pointers:
+            course.append(vec.incoming)
+        return course
+
+    def add_vector_to_route(self, vec: Vector, course: list):
+        info = self.get_insertion_index(vec)
+        for i in range(info[1],info[2]):
+            course[i].increase_by(self.speed_const)
+        for i in range(info[2]):
+            course[i].increase_by(self.speed_const)
+        course.insert(info[0], info[2])
+        course.inser(info[1], info[3])
     
+    def create_dummy_course(self, c: Call):
+        course = self.create_basic_course(c)
+        vectors = self.create_dummy_vectors()
+        vec = Vector(c)
+        vectors.insert(0, vec)
+        for vector in vectors:
+            self.add_vector_to_route(vector, course)
+        
+
     def future_position(self, incoming_node: Node):
         state = self.get_state(incoming_node)
         inc_index = self.timed_course.index(incoming_node)
@@ -111,7 +132,7 @@ class Route:
         delay_factor = (2*src_delay +dst_delay)*self.stop_const.get('full_break')
         return (src_index, dst_index, src_time , delay_factor + dist)
 
-    def easy_case_same_inverse_direction_pickup_time_calc(self, vec: Vector):
+    def easy_case_inverse_direction(self, vec: Vector):
         pos = self.future_position(vec.incoming)
         inc_node = vec.incoming
         src_node = vec.src
@@ -141,7 +162,7 @@ class Route:
         dist += (2*src + dst_delay + 1) * self.stop_const.get('full_break')
         return(src_index, dst_index, src_time , dist)
         
-    def hard_case_missed_floor_time_calc(self, vec: Vector, pos):
+    def hard_case_missed_floor(self, vec: Vector, pos):
         pos = self.future_position(vec.incoming)
         inc_node = vec.incoming
         src_node = vec.src
@@ -217,10 +238,10 @@ class Route:
         if case == 1:
             tup = self.easy_case_same_diretion(vec)
         elif case == 2:
-            tup = self.easy_case_same_inverse_direction_pickup_time_calc(vec)
+            tup = self.easy_case_inverse_direction(vec)
         else:
-            tup = self.hard_case_missed_floor_time_calc(vec)
-        return (tup[0], tup[1])
+            tup = self.hard_case_missed_floor(vec)
+        return tup
         
     # # TODO: We don't consider if the stop already exists in the stops list, this could cause problems since the elevator would have the floor multiple times
     # def minimal_distance_index(self, stop):
