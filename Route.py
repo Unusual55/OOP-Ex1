@@ -36,9 +36,9 @@ class Route:
     #This function calculates the time which take to this call to complete as well as how much delay factor will be caused if we add this call to the list
     def easy_case_same_diretion_up(self, pos: int, vec: Vector):
         #TODO: after we have future position calculation, remove pos and use it to define pos
-        inc_node = vec[0]
-        src_node = vec[1]
-        dst_node = vec[2]
+        inc_node = vec.incoming
+        src_node = vec.src
+        dst_node = vec.dst
         src = src_node.floor
         dst = dst_node.floor
         dist = (abs(src-pos)+abs(dst-src))*self.speed_const.get('tpf') + self.stop_const.get('full_break')
@@ -87,9 +87,9 @@ class Route:
         return delay_factor + dist
 
     def easy_case_same_inverse_direction_pickup_time_calc(self, pos: int, vec: Vector):
-        inc_node = vec[0]
-        src_node = vec[1]
-        dst_node = vec[2]
+        inc_node = vec.incoming
+        src_node = vec.src
+        dst_node = vec.dst
         src = src_node.floor
         dst = dst_node.floor
         inc_index = self.timed_course.index(inc_node)

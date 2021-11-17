@@ -1,6 +1,8 @@
 import json
+import math
 from enum import IntEnum
 from Call import Call
+from Node import Node, Type
 from Route import Route
 
 
@@ -27,8 +29,9 @@ class Elevator:
         self.position = 0
         self.direction = Direction.IDLE
 
-        self.up_stops = Route()
-        self.down_stops = Route()
+        self.route = []
+        # self.up_stops = Route()
+        # self.down_stops = Route()
 
     def calc_future_position(self, time, direction):
         # If the elevator is idle we want take into a account closing the doors and starting the elevator
@@ -47,11 +50,14 @@ class Elevator:
     def const_time(self):
         return self.close_time + self.open_time + self.start_time + self.stop_times
     
-    # def calc_call_time(self, call: Call):
-    #     if
-    
-    # def calc_route(self, route: Route, test_stop = None):
-        # return 
+    def future_position(self, node: Node):
+        next_time = node.time
+        last_stop_node = [n for n in self.route if n.type != Type.incoming][-1] # Get the last non incoming node in the route list
+        curr_time = last_stop_node.time
+        
+        dt = abs(next_time - curr_time)
+        dt += self.const_time() # Add the time it takes to close the doors and start the elevator
+        return self.position + math.copysign(1.0, self.position - node.floor) * (dt * self.speed)
     
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.to_json())
