@@ -20,20 +20,19 @@ class Route:
         pass
     
     def future_position(self, incoming_node: Node):
+        state = self.get_state(incoming_node)
+        inc_index = self.timed_course.index(incoming_node)
+        i = inc_index
+        while i-1>0 and self.timed_course[i-1].type == Type.incoming:
+            i -= 1
+        last_floor = self.timed_course[i].floor
+        if state == 0:
+            return last_floor
         next_time = incoming_node.time
-        last_stop_node = [n for n in self.timed_course if n.type != Type.incoming][-1] # Get the last non incoming node in the route list
-        curr_time = last_stop_node.time
-        
+        curr_time = self.timed_course[i].time
         dt = abs(next_time - curr_time)
         dt -= self.stop_const["start_course"] # Add the time it takes to close the doors and start the elevator
-        dir = math.copysign(1.0, last_stop_node.floor - incoming_node.src.floor)
-        return self.last_stop_node.floor + dir * (dt * self.speed_const["speed"])
-
-    # def Route_Offer(self, c: Call):
-    #     pass
-
-    # def route_optimal_now(self):
-    #     pass
+        return self.last_stop_node.floor + state * (dt * self.speed_const["speed"])
 
     # def reroute(self, c: Call):
     #     dummy_vectors = self.create_dummy_vectors()
@@ -59,15 +58,7 @@ class Route:
         dire = math.copysign(1, src - pos)
         while i<len(self.timed_course) and inc_node.time>self.timed_course[i].time:
             i+=1
-        inc_index = i
-        
-        # while self.timed_course[i].floor >= dire*src_node.floor:
-        #     src_delay += 1
-        #     i += 1
-        # while self.timed_course[i].floor >= dire*dst_node.floor:
-        #     dst_delay += 1
-        #     i += 1
-        
+        inc_index = i    
         while (dir and self.timed_course[i].floor >= src_node.floor) or ((not dir) and self.timed_course[i].floor <= src_node.floor):
             src_delay += 1
             i += 1
@@ -75,23 +66,6 @@ class Route:
         while (dir and self.timed_course[i].floor >= dst_node.floor) or ((not dir) and self.timed_course[i].floor <= dst_node.floor):
             dst_delay += 1
             i += 1
-
-        #region
-        # if dir:
-        #     while self.timed_course[i].floor >= src_node.floor:
-        #         src_delay += 1
-        #         i += 1
-        #     while self.timed_course[i].floor >= dst_node.floor:
-        #         dst_delay += 1
-        #         i += 1
-        # else:
-        #      while self.timed_course[i].floor <= src_node.floor:
-        #         src_delay += 1
-        #         i += 1
-        #      while self.timed_course[i].floor <= dst_node.floor:
-        #         dst_delay += 1
-        #         i += 1
-        #endregion
 
         delay_factor = (2*src_delay +dst_delay)*self.stop_const.get('full_break')
         return delay_factor + dist
@@ -121,7 +95,6 @@ class Route:
         dist = (abs(src-pos)+abs(turn-src)+abs(turn-dst))*self.speed_const.get('tpf')
         return dist+ (2*src + dst_delay + 1) * self.stop_const.get('full_break')
         
-
     def hard_case_missed_floor_time_calc(self, vec: Vector, pos):
         inc_node = vec.incoming
         src_node = vec.src
@@ -188,25 +161,7 @@ class Route:
         if next_stop_floor > last_Stop_floor:
             return Direction.UP
         return Direction.DOWN
-        # not_incoming = [n for n in self.timed_course if n.type != Type.incoming]
-        # last_stop_node = not_incoming[-1] # Get the last non incoming node in the route list
-        # next_stop_node = not_incoming[0] # Get the last non incoming node in the route list
 
-    # def __init__(self, *stops):
-    #     self.stops = [c for c in stops]
-    #     self.distances = Route.calc_distances(self.stops)
-    
-    # def add(self, stop):
-    #     self.stops.insert(self.minimal_distance_index(stop), stop)
-    #     self.distances = Route.calc_distances(self.stops)
-        
-    # @staticmethod
-    # def calc_distances(stops):
-    #     return [abs(next - prev) for prev, next in zip(stops, stops[1:])]
-    
-    # def total_distance(self):
-    #     return sum(self.distances)
-    
     # # TODO: We don't consider if the stop already exists in the stops list, this could cause problems since the elevator would have the floor multiple times
     # def minimal_distance_index(self, stop):
     #     if len(self) == 0:
@@ -214,13 +169,6 @@ class Route:
     #     stops = self.stops.copy()
     #     dists = [sum(Route.calc_distances(stops[:i] + [stop] + stops[i:])) for i in range(len(stops)+1)]
     #     return dists.index(min(dists))
-    
-    
-    # def __getitem__(self, index):
-    #     return self.stops[index]
-    
-    # def __len__(self):
-    #     return len(self.stops)
 
 
     

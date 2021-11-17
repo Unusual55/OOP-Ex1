@@ -3,16 +3,20 @@ from Elevator import Elevator
 from Call import Call
 class Vector:
     def __init__(self, c: Call) -> None:
-        self.incoming = Node(c.id, c.time, 0, Type.incoming)
-        self.src = Node(c.id, -1, c.src, Type.src)
-        self.dst = Node(c.id, -1, c.dst, Type.dst)
-        self.incoming.set_connection_src(self.src)
-        self.incoming.set_connection_dst(self.dst)
-        self.src.set_conncection_incoming(self.incoming)
-        self.src.set_connection_dst(self.dst)
-        self.dst.set_conncection_incoming(self.incoming)
-        self.dst.set_connection_src(self.src)
+        self.nodes = []
+        v1 = Node(c.id, c.time, 0, Type.incoming)
+        v2 = Node(c.id, c.time, c.src, Type.src)
+        v3 = Node(c.id, c.time, c.dst, Type.dst)
+        v1.set_connection_src(v2)
+        v1.set_connection_dst(v3)
+        v2.set_conncection_incoming(v1)
+        v2.set_connection_dst(v3)
+        v3.set_conncection_incoming(v1)
+        v3.set_connection_src(v2)
+        self.nodes.append(v1)
+        self.nodes.append(v2)
+        self.nodes.append(v3)
     
     def reset(self):
-        self.src.time = -1
-        self.dst.time = -1
+        self.nodes[1].time = -1
+        self.nodes[2].time = -1
