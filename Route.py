@@ -83,8 +83,8 @@ class Route:
 
 
     #This function calculates the time which take to this call to complete as well as how much delay factor will be caused if we add this call to the list
-    def easy_case_same_diretion(self, pos: int, vec: Vector):
-        #TODO: after we have future position calculation, remove pos and use it to define pos
+    def easy_case_same_diretion(self, vec: Vector):
+        pos = self.future_position(vec.incoming)
         inc_node = vec.incoming
         src_node = vec.src
         dst_node = vec.dst
@@ -102,15 +102,16 @@ class Route:
         while (dir and self.timed_course[i].floor >= src_node.floor) or ((not dir) and self.timed_course[i].floor <= src_node.floor):
             src_delay += 1
             i += 1
-
+        src_index = i
         while (dir and self.timed_course[i].floor >= dst_node.floor) or ((not dir) and self.timed_course[i].floor <= dst_node.floor):
             dst_delay += 1
             i += 1
-
+        dst_index = i
         delay_factor = (2*src_delay +dst_delay)*self.stop_const.get('full_break')
-        return delay_factor + dist
+        return (src_index, dst_index, delay_factor + dist)
 
-    def easy_case_same_inverse_direction_pickup_time_calc(self, pos: int, vec: Vector):
+    def easy_case_same_inverse_direction_pickup_time_calc(self, vec: Vector):
+        pos = self.future_position(vec.incoming)
         inc_node = vec.incoming
         src_node = vec.src
         dst_node = vec.dst
@@ -123,6 +124,7 @@ class Route:
         while (dir and self.timed_course[i].floor >= src_node.floor) or ((not dir) and self.timed_course[i].floor <= src_node.floor):
             src_delay += 1
             i += 1
+        src_index = i
         dst_delay = 0
         turn = self.find_turning_point(i)
         while i < turn:
@@ -132,10 +134,13 @@ class Route:
         while (dir and self.timed_course[i].floor >= dst_node.floor) or ((not dir) and self.timed_course[i].floor <= dst_node.floor):
             dst_delay += 1
             i += 1
+        dst_index = i
         dist = (abs(src-pos)+abs(turn-src)+abs(turn-dst))*self.speed_const.get('tpf')
-        return dist+ (2*src + dst_delay + 1) * self.stop_const.get('full_break')
+        dist += (2*src + dst_delay + 1) * self.stop_const.get('full_break')
+        return(src_index, dst_index, dist)
         
     def hard_case_missed_floor_time_calc(self, vec: Vector, pos):
+        pos = self.future_position(vec.incoming)
         inc_node = vec.incoming
         src_node = vec.src
         dst_node = vec.dst
@@ -154,6 +159,7 @@ class Route:
         while (dir and self.timed_course[i].floor >= src_node.floor) or ((not dir) and self.timed_course[i].floor <= src_node.floor):
             src_delay += 1
             i += 1
+        src_index = i
         turn2 = self.find_turning_point(i)
         while i < turn2:
             i += 1
@@ -161,11 +167,12 @@ class Route:
         while (dir and self.timed_course[i].floor >= dst_node.floor) or ((not dir) and self.timed_course[i].floor <= dst_node.floor):
             dst_delay += 1
             i += 1
+        dst_index = i
         turn_floor1 = self.timed_course[turn1].floor
         turn_floor2 = self.timed_course[turn2].floor
         dist = (abs(turn_floor1-pos)+abs(turn_floor1-src)+abs(src-turn_floor2)+abs()+abs(dst-turn_floor2))*self.speed_const.get('tpf')
         delay_factor = (2*src_delay + dst_delay)*self.stop_const.get('full_break')
-        return dist + delay_factor
+        return (src_index, dst_index, dist + delay_factor)
 
     def get_sorted_nodelist(self):
         li = [] 
@@ -202,6 +209,16 @@ class Route:
             return Direction.UP
         return Direction.DOWN
 
+    def get_insertion_index(self, vec: Vector):
+        case = 0
+        if case == 1:
+            tup = self.easy_case_same_diretion(vec)
+        elif case == 2:
+            tup = self.easy_case_same_inverse_direction_pickup_time_calc(vec)
+        else:
+            tup = self.hard_case_missed_floor_time_calc(vec)
+        return (tup[0], tup[1])
+        
     # # TODO: We don't consider if the stop already exists in the stops list, this could cause problems since the elevator would have the floor multiple times
     # def minimal_distance_index(self, stop):
     #     if len(self) == 0:
