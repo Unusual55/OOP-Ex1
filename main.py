@@ -11,6 +11,7 @@ debuging = True
 def main():
     building = Building.parse_from_json(jsonPath)
     controller = Controller.from_csv(csvPath)
+    controller.allocate(building)
     pass
 
 

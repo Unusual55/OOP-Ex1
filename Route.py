@@ -1,6 +1,6 @@
 from Call import Call
 from Node import Node, Type
-from Elevator import Direction, Elevator
+from Elevator import Elevator, Direction
 from copy import copy
 from Vector import Vector
 import math
@@ -75,7 +75,7 @@ class Route:
         course.inser(info[1], info[3])
     
     def create_dummy_course(self, c: Call):
-        course = self.create_basic_course(c)
+        course = self.create_basic_course(Vector(c))
         vectors = self.create_dummy_vectors()
         vec = Vector(c)
         vectors.insert(0, vec)

@@ -1,9 +1,7 @@
 import json
 import math
 from enum import IntEnum
-from Call import Call
-from Node import Node, Type
-from Route import Route
+# from Route import Route
 
 
 class Direction(IntEnum):
@@ -28,8 +26,8 @@ class Elevator:
 
         self.position = 0
         self.direction = Direction.IDLE
-
-        self.route = Route(self)
+        import Route
+        self.route = Route.Route(self)
         # self.up_stops = Route()
         # self.down_stops = Route()
 

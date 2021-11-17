@@ -1,7 +1,7 @@
 import math
 
 class Call:
-    def init__(self, time, src, dst, id):
+    def __init__(self, time, src, dst, id):
         self.time = time
         self.src = src
         self.dst = dst
