@@ -5,8 +5,8 @@ import json
 from Building import Building
 from Controller import Controller
 from Elevator import Elevator
-jsonPath = './data/Ex1_input/Ex1_Buildings/B3.json'
-csvPath = './data/Ex1_input/Ex1_Calls/Calls_b.csv'
+jsonPath = './data/Ex1_input/Ex1_Buildings/B5.json'
+csvPath = './data/Ex1_input/Ex1_Calls/Calls_d.csv'
 # java -jar .\Ex1_checker_V1.2_obf.jar 123456789,123456789 .\data\Ex1_input\Ex1_Buildings\B5.json .\out.csv out.log
 
 debuging = True
@@ -16,7 +16,7 @@ def main():
     controller = Controller.from_csv(csvPath)
     controller.allocate(building)
     print(controller.allocated_elevators)
-    controller.to_csv('B3_b.csv')
+    controller.to_csv('B5_d.csv')
     pass
 
 
