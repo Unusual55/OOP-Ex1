@@ -28,8 +28,6 @@ class Elevator:
         self.direction = Direction.IDLE
         import Route
         self.route = Route.Route(self)
-        # self.up_stops = Route()
-        # self.down_stops = Route()
 
     def calc_future_position(self, time, direction):
         # If the elevator is idle we want take into a account closing the doors and starting the elevator

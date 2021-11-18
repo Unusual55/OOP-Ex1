@@ -54,9 +54,5 @@ class Node_test(unittest.TestCase):
         d.set_connection_dst(c)
         self.assertTrue(a.__eq__(d))
 
-        
-
-
-
     if __name__ == "__main__":
         unittest.main()

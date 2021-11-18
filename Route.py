@@ -110,14 +110,6 @@ class Route:
         dt -= self.stop_const.get("start_course") # Add the time it takes to close the doors and start the elevator
         return last_floor + state * (dt * self.speed_const.get("speed"))
 
-    # def reroute(self, c: Call):
-    #     dummy_vectors = self.create_dummy_vectors()
-    #     v = Vector(c)
-    #     dummy_vectors.insert(0,v)
-    #     for v in dummy_vectors:
-    #         v.
-
-
     #This function calculates the time which take to this call to complete as well as how much delay factor will be caused if we add this call to the list
     def easy_case_same_diretion(self, vec: Vector, course: list):
         pos = self.future_position(vec.incoming, course)
@@ -258,14 +250,6 @@ class Route:
             tup = self.hard_case_missed_floor(vec, course)
         return tup
         
-    # # TODO: We don't consider if the stop already exists in the stops list, this could cause problems since the elevator would have the floor multiple times
-    # def minimal_distance_index(self, stop):
-    #     if len(self) == 0:
-    #         return 0
-    #     stops = self.stops.copy()
-    #     dists = [sum(Route.calc_distances(stops[:i] + [stop] + stops[i:])) for i in range(len(stops)+1)]
-    #     return dists.index(min(dists))
-
 
     
     
