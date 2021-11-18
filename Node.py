@@ -1,4 +1,5 @@
 from enum import IntEnum
+import re
 
 class Type(IntEnum):
     incoming = 1
@@ -34,6 +35,8 @@ class Node:
             self.time += d
     
     def __eq__(self, o: object) -> bool:
-        return self.id == o.id and self.time == o.time and self.floor == o.floor and self.type == o.type
+        if isinstance(o, Node):
+            return self.id == o.id and self.time == o.time and self.floor == o.floor and self.type == o.type
+        return False
     
 

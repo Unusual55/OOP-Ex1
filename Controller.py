@@ -4,7 +4,11 @@ from Call import Call
 from Elevator import Elevator
 from Route import Route
 import math
-
+import threading
+from numba import jit, prange
+import functools
+import re
+import cProfile
 class Controller:
     __columns_headers = ['elevator-call', 'time', 'source',
                          'destination', 'status', 'allocated-elevator']
@@ -21,17 +25,28 @@ class Controller:
 
     def allocate_elevator(self, call_id: int, elevator_id: int):
         self.allocated_elevators[call_id] = elevator_id
-    
+
+    @functools.lru_cache(maxsize=128)
     def allocate(self, building: Building):
+        elevs = building.elevators
+        sp_avg = (sum([e.speed for e in elevs])/len(elevs))*(building.number_of_floors*0.14)
         for call in reversed(self.calls):
             m = math.inf
             id = -1
-            for elevator in building.elevators:
-                t = elevator.route.get_offer(call)
+            li = []
+            for i in range(building.number_of_elevators):
+                t = elevs[i].route.check_insertion_delay_factor(call)
+                li = [t]
                 if t < m:
                     m = t
-                    id = elevator.elevator_id
-            building.elevators[id].route.set_new_route(call)
+                    id = elevs[i].elevator_id
+            # for k in li:
+            #     if k > m:
+            #         k -=sp_avg/4
+            #         if k<m:
+            #             m = k
+            #             id = elevs[i].elevator_id
+            building.elevators[id].route.create_dummy_course(call)
             self.allocate_elevator(call.id, id)
 
     @classmethod

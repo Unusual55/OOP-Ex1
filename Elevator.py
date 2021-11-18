@@ -46,7 +46,7 @@ class Elevator:
         return t
     
     def const_time(self):
-        return self.close_time + self.open_time + self.start_time + self.stop_times
+        return self.close_time + self.open_time + self.start_time + self.stop_time
     
     
     def toJSON(self):
