@@ -1,6 +1,6 @@
 from Node import Node, Type
-from Elevator import Elevator
 from Call import Call
+
 class Vector:
     def __init__(self, c: Call) -> None:
         self.incoming = Node(c.id, c.time, 0, Type.incoming)

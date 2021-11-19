@@ -3,6 +3,8 @@
 data/
 Ex1_checker_V1.2_obf.jar
 out.*
+output.*
+workspace.code-workspace
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

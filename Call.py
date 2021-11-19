@@ -8,5 +8,3 @@ class Call:
         self.allocated_elevator = None
         self.direction = math.copysign(1, dst - src)
         self.id = id
-
-    #TODO: add id property in the csv parser

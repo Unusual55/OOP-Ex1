@@ -1,14 +1,9 @@
 import pandas as pd
 from Building import Building
 from Call import Call
-from Elevator import Elevator
-from Route import Route
 import math
-import threading
-from numba import jit, prange
 import functools
-import re
-import cProfile
+
 class Controller:
     __columns_headers = ['elevator-call', 'time', 'source',
                          'destination', 'status', 'allocated-elevator']
@@ -29,19 +24,16 @@ class Controller:
     @functools.lru_cache(maxsize=128)
     def allocate(self, building: Building):
         elevs = building.elevators
-        sp_avg = (sum([e.speed for e in elevs])/len(elevs))*(building.number_of_floors*0.14)
         for call in reversed(self.calls):
             m = math.inf
-            id = -1
-            li = []
+            elevator_id = -1
             for i in range(building.number_of_elevators):
                 t = elevs[i].route.check_insertion_delay_factor(call)
-                li = [t]
                 if t < m:
                     m = t
-                    id = elevs[i].elevator_id
-            building.elevators[id].route.create_dummy_course(call)
-            self.allocate_elevator(call.id, id)
+                    elevator_id = elevs[i].elevator_id
+            building.elevators[elevator_id].route.create_dummy_course(call)
+            self.allocate_elevator(call.id, elevator_id)
 
     @classmethod
     def from_csv(cls, file_name: str):

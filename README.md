@@ -65,14 +65,16 @@ After a call was allocated to an elevator, the system will insert it's nodes to 
 By doing that, we might ruined the order of the nodes in the course. The system will sort the nodes by their time so the order will not change and the course would still be as if it's an online 
 
 # The algorithm
+```
 1. Loop through the call list backwards
-2. Loop through the elevator list
-3. Check the time needed for every elevator
+    a. Loop through the elevator list
+        . Check the time needed for every elevator
 4. Keep the minimal time and the id of the elevator.
 5. allocate the call to the elevator
 6. Insert the Vector of the call to the course of the elevator
 7. Update the arrival time for every node that will be delayed because of the new call.
-8. Sort the course the course by the time property of the nodes so the order will be as if it's an online algorithm course 
+8. Sort the course the course by the time property of the nodes so the order will be as if it's an online algorithm course
+```
 
 # UML
 ![UML](/UML.jpeg)
@@ -97,7 +99,14 @@ pip install -r requirements.txt
 ```
 
 # Usage
-This algorithm can be used to make an optimal call allocations, follow the and see how the algorithm evolve with every generation and the waiting time improve with every generation.
+This algorithm can be used to make an optimal call allocations, follow the and see how the algorithm evolve with every generation and the waiting time improve with every generation. In order to run the program enter the following in your terminal:
+```sh
+python Ex1.py path/to/building/json path/to/calls/csv output/file
+```
+Example:
+```sh
+python Ex1.py B1.json Calls_a.csv output.csv
+```
 
 # Achnowledgement
 These recourses helped us along the way while we thought or write the algorithm:

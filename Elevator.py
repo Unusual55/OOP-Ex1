@@ -1,14 +1,10 @@
 import json
-import math
 from enum import IntEnum
-# from Route import Route
-
 
 class Direction(IntEnum):
     IDLE = 0  # When the elevator is idle the doors are open
     UP = 1
     DOWN = -1
-
 
 class Elevator:
     __elevator_fields = {'_id': 'elevator_id', '_speed': 'speed', '_minFloor': 'min_floor', '_maxFloor': 'max_floor',

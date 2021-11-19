@@ -1,10 +1,10 @@
 from enum import IntEnum
-import re
 
 class Type(IntEnum):
     incoming = 1
     src = 2
     dst = 3
+
 class Node:
     def __init__(self, id: int, time: float, floor: int, type: int):
         self.id = id

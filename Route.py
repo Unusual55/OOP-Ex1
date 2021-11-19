@@ -1,10 +1,10 @@
-from numpy import extract
 from Call import Call
 from Node import Node, Type
 from Elevator import Direction
 from Vector import Vector
 import functools
-from math import ceil, floor, copysign
+from math import ceil, copysign
+
 #The Route is The course management of the elevator, it's a data structure that contain the list
 #of Vector objects that the elevator take care of, a list of Node object which represent it's course
 #as well as it's time line for the simulation.
