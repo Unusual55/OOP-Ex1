@@ -49,7 +49,7 @@ This delay factor control system help us to keep track of the delay and arrival 
 
 
 
-# The algorithm
+# The process of the algorithm
 ***  ***
 ## Pre allocation auction
 We will allocate the calls backwards- The last call will be allocated first and the first call will be the last call to be allocated.
@@ -63,6 +63,17 @@ The elevator which returns the minimal time will be chosen and this call will be
 ## Building online course
 After a call was allocated to an elevator, the system will insert it's nodes to their most suitable indexes, and update the arrival time to every Node after the source node and destenation node.
 By doing that, we might ruined the order of the nodes in the course. The system will sort the nodes by their time so the order will not change and the course would still be as if it's an online 
+
+# The algorithm
+1. Loop through the call list backwards
+2. Loop through the elevator list
+3. Check the time needed for every elevator
+4. Keep the minimal time and the id of the elevator.
+5. allocate the call to the elevator
+6. Insert the Vector of the call to the course of the elevator
+7. Update the arrival time for every node that will be delayed because of the new call.
+8. Sort the course the course by the time property of the nodes so the order will be as if it's an online algorithm course 
+
 # UML
 ![UML](/UML.jpeg)
 
@@ -87,8 +98,19 @@ This algorithm can be used to make an optimal call allocations, follow the and s
 # Achnowledgement
 These recourses helped us along the way while we thought or write the algorithm:
 
-1. 
+1. P. Cortés, J. Larrañeta, L. Onieva,
+Genetic algorithm for controllers in elevator groups: analysis and simulation during lunchpeak traffic,
+Applied Soft Computing,
+Volume 4, Issue 2,
+2004,
+Pages 159-174,
+ISSN 1568-4946,
+https://doi.org/10.1016/j.asoc.2003.11.002. 
 <cite>https://www.sciencedirect.com/science/article/abs/pii/S1568494604000286?via%3Dihub</cite>
 
-2.
-<cite></cite>
+2. Yerzhigit Bapin and Vasilios Zarikas, “Smart Building’s Elevator with Intelligent Control Algorithm based on Bayesian Networks” International Journal of Advanced Computer Science and Applications(ijacsa), 10(2), 2019.
+<cite>http://dx.doi.org/10.14569/IJACSA.2019.0100203</cite>
+
+3. <cite>https://www.youtube.com/watch?v=siqiJAJWUVg&t=1229s</cite>
+
+4. <cite>https://www.youtube.com/watch?v=14Cc8IDWtFM</cite>
