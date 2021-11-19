@@ -27,9 +27,42 @@ Taking into account those 3 parameters, we had to think of a way to deal with mo
 | Route      | Data structure that contain list of vectors which represent the Calls it's elevator is taking care of, list of Nodes which  represent the course of the elevator as well as it's time line along the whole simulation. This Data Structure can insert every Node into the course as if it's an online algorithm, in order to simulation which will be  as close as possible to the choice of most optimal elevator in online algorithm. This feature allow us to use both offline algorithm and online algorithm to improve the results of the algorithm. |
 | Controller | The controller is the brain behind the whole algorithm. The controller parse the csv file into list of Calls and using allocate  functions run the whole simulation by check for every call which elevator would be optimal for the long term.                                                                                                                                                                                                                                                                                                            |
 
+## Connection between nodes
+As we mentioned earlier there are 3 types of Nodes:
+
+1. incoming
+2. src
+3. dst
+
+And every Vector contain one of each type.
+
+Every node contain a pointer to each of the other nodes in the vector.
+
+The connection can help us to take into account the diffrence in calculating the delay that might be caused to the src node and the dst node based on the type of the node.
+ The incoming Node is special, since it's time won't change.
+
+For example, if we reach the source floor 10 second later than we expected, then we will reach the destenation floor 10 seconds later as well, but if we will only reach the destenation floor 10 seconds later- if the elevator already been to the source floor, we reached the source floor at the expected time, and we will reach only the destentaion floor 10 seconds later.
+
+The Node class is taking care of that, if we want to delay the source floor arrival time, it will automatically delay the destenation floor as well, but if we want to delay only the destenation floor arrival time, we won't delay the source floor arrival time as well.
+
+This delay factor control system help us to keep track of the delay and arrival time much easier and it solve the most delicate part of the project which is time calculations.
+
+
+
 # The algorithm
 ***  ***
-
+## Pre allocation auction
+We will allocate the calls backwards- The last call will be allocated first and the first call will be the last call to be allocated.
+Every elevator will check how much time will be needed to finish taking care of the call, and how much it will affect the other calls that already allocated to the elevator.
+## Calculations
+every elevator will check where to insert the src and dst nodes, and calculate how long will it take to reach the source floor and the destenation floor.
+The delay factor that will be caused to every call will be updated during the insertion of the Nodes and will be updated directly in the time property of every Node.
+## Allocation
+Every elevator returns the time that it will need to finish taking care of this call, as well as how much time it will take longer than expected to finish taking care of every other calls.
+The elevator which returns the minimal time will be chosen and this call will be allocated to it.
+## Building online course
+After a call was allocated to an elevator, the system will insert it's nodes to their most suitable indexes, and update the arrival time to every Node after the source node and destenation node.
+By doing that, we might ruined the order of the nodes in the course. The system will sort the nodes by their time so the order will not change and the course would still be as if it's an online 
 # UML
 ![UML](/UML.jpeg)
 
