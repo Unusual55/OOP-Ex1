@@ -86,12 +86,16 @@ We had to create our own output recources as well this time, after the algorithm
 
 ## Clone the repositorty
 Enter your IDE and clone the repository:
-```java
-https://github.com/SassonNir/OOP-Ex1.git
+```sh
+git clone https://github.com/SassonNir/OOP-Ex1.git
 ```
 
 ## Prerequisites
 Enter the terminal in your IDE and install the next commands in order to install the required modules:
+```git
+pip install -r requirements.txt
+```
+
 # Usage
 This algorithm can be used to make an optimal call allocations, follow the and see how the algorithm evolve with every generation and the waiting time improve with every generation.
 
