@@ -28,26 +28,9 @@ class Elevator:
         self.direction = Direction.IDLE
         import Route
         self.route = Route.Route(self)
-        # self.up_stops = Route()
-        # self.down_stops = Route()
-
-    def calc_future_position(self, time, direction):
-        # If the elevator is idle we want take into a account closing the doors and starting the elevator
-        if self.direction == Direction.IDLE:
-            time -= self.close_time + self.start_time
-        # distance = time * speed
-        return self.position + direction * (time * self.speed)
-
-    # Calculates the time it takes to get to a floor and get into the IDLE state
-    def calc_time_to_floor(self, floor):
-        t = abs(self.position - floor) / self.speed
-        if self.direction == Direction.IDLE:
-            t += self.close_time + self.start_time + self.stop_time + self.open_time
-        return t
     
     def const_time(self):
         return self.close_time + self.open_time + self.start_time + self.stop_time
-    
     
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.to_json())

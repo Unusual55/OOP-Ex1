@@ -40,12 +40,6 @@ class Controller:
                 if t < m:
                     m = t
                     id = elevs[i].elevator_id
-            # for k in li:
-            #     if k > m:
-            #         k -=sp_avg/4
-            #         if k<m:
-            #             m = k
-            #             id = elevs[i].elevator_id
             building.elevators[id].route.create_dummy_course(call)
             self.allocate_elevator(call.id, id)
 

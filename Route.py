@@ -10,12 +10,11 @@ class Route:
     def __init__(self, e) -> None:
         import Elevator
         self.call_pointers = []
-        self.timed_course = [] # we might need to create linkedlist of nodes so we can seperate the route data structure from the course
+        self.timed_course = []
         self.stop_const = {'start_course': e.close_time + e.start_time, 'end_course': e.stop_time + e.open_time, 'full_break': e.open_time + e.close_time + e.start_time + e.stop_time}
         self.speed_const = {'speed': e.speed, 'tpf': 1/e.speed}
         self.count = 0
     
-    # TODO: add case if elev_pos == src.floor
     def case_check(self, vec: Vector, course: list):
         elev_dir = self.get_state(vec.incoming, course)
         call_dir = copysign(1.0, vec.src.floor - vec.dst.floor)
@@ -216,8 +215,7 @@ class Route:
         return delay_by_call
 
         #add cmd_delay to src.time at the end
-        
-        
+            
     def hard_case_missed_floor(self, vec: Vector, course: list):
         pos = self.future_position(vec.incoming, course)
         inc_node, src_node, dst_node = vec.incoming, vec.src, vec.dst
@@ -325,8 +323,3 @@ class Route:
         delay_factor += (tup[3] - vec.incoming.time)
         self.timed_course.remove(vec.incoming)
         return delay_factor
-
-    # def check_if_reach_floor_src(self, vec: Vector):
-    #     tup = self.get_insertion_index(vec, self.timed_course)
-    #     check = [x for x in self.timed_course if tup[2]-self.stop_const.get('end_course')<=x.time<=tup[2]+self.stop_const.get('start_course')]
-    #     find = [x for x in check if ]
