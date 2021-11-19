@@ -1,0 +1,120 @@
+@startuml
+'https://plantuml.com/class-diagram
+class Building{
++elevators: list
++min_flor: int
++max_floor: int
++number_of_elevators: int
++number_of_floors: int
++__init__(self, int, int, list): None
++toJSON(self): str
++str(self): str
++repr(self): str
++to_json(self): dict
++{static} parse_from_json(class, str): Building
++{static} parse_building(class, dict): Building
++{static} validate_building(class, dict): None
+}
+Direction *-- Elevator
+class Direction{
++IDLE: int
++UP : int
++DOWN: int
++Direction(intEnum): int
+}
+class Elevator{
++min_floor: int
++max_floor: int
++open_time: float
++close_time float
++position: int
++getSpeed(Elevator): float
++start_time: float
++stop_time: float
++id: int
++route: Route
++__init__(self, int, float, int, int, float, float, float, float): None
++toJSON(self): str
++__str__(self): str
++__repr__(self): str
++to_json(self): dict
++{static}parse_elevator(class, dict): Elevator
++{static}validate_elevator(class, dict): None
++const_time(self): float
+}
+class Call{
++time: float
++src: int
++dst: int
++id: int
++direction: float
++allocated_elevator: int
++ __init__(self, float, int, int , int): None
+}
+Type *-- Node
+class Type{
++incoming: int
++src: int
++dst: int
++Type(intEnum): int
+}
+class Node{
++ id: int
++ time: float
++ floor: int
++ type: int
++ moveable: bool
++ incoming: Node
++ src: Node
++ dst: Node
++ __init__(self, int, float, int, int): None
++ set_connection_incoming(self, Node): None
++ set_connection_src(self, Node): None
++ set_connection_dst(self, Node): None
++ increase_by_split_cases(self, float): None
++__eq__(self, object): bool
+}
+class Vector{
++incoming: Node
++src: Node
++dst: Node
++ __init__(self, Call): None
++ reset(self): None
+}
+class Controller{
++{static} _columns_headers: list
++calls_log: pd.DataFrame
++calls_data: list
++calls: list
++allocated_elevators: list
++ init(self, DataFrame): None
++ allocate_elevator(self, Elevator): None
++ allocate(self, Building): None
++ {static} from_csv(class, str): Controller
++ to_csv(self, str): None
+}
+class Route{
++call_pointers: list
++timed_course: list
++stop_const: dict
++speed_const: dict
++count: int
++ __init__(self, Elevator): None
++ case_check(self, Vector, list): int
++{static} calc_route_time(list): float
++create_basic_route(self, Vector): list
++add_vector_to_route(self, Vector, list): None
++create_dummy_course(self, Call): list
++future_position(self, Node, list): int
++easy_case_same_direction(self, Vector, list): float
++easy_case_same_floor(self, Vector, list): float
++easy_case_inverse_direction(self, Vector, list): float
++hard_case_analysis_stop(self, Vector, list): float
++hard_case_missed_floor(self, Vector, list): float
++get_sorted_nodelist(self): list
++find_turning_point(self, int, list): int
++get_state(self, Node, list): int
++get_insertion_index(self, Vector, list): tuple
++check_insertion_delay_factor(self, Call): float
+}
+@enduml
