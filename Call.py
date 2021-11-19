@@ -1,6 +1,7 @@
 import math
 
 class Call:
+    #This function initialize the Call object
     def __init__(self, time, src, dst, id):
         self.time = time
         self.src = src
