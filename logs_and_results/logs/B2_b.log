@@ -1,4 +1,4 @@
-Ex1 (OOP) Simulator log: stage ./data/Ex1_input/Ex1_Buildings/B2.json,  B2_b.csv
+Ex1 (OOP) Simulator log: stage B2.json,  B2_b.csv
 0.0,OOP_Ex1_Elevator_Simulator
 0.0,Simulated Building, Building [-2,10]
 0) ex1.Elevator_A, Elev_, id,0,  speed, 1.0, open: 2.0,  start: 3.0, close: 2.0,  stop: 3.0
@@ -1471,5 +1471,5 @@ Ex1 (OOP) Simulator log: stage ./data/Ex1_input/Ex1_Buildings/B2.json,  B2_b.csv
 3588.0,Elevator call,3587.217656,28,-6,1,0, got allocated to elevator, 0
 3590.0,Elevator call,3589.038048,63,-2,1,1, got allocated to elevator, 1
 3710.0,************* Simulation Ended ************
-Code Owners,208601401,212174486,  Building_file,./data/Ex1_input/Ex1_Buildings/B2.json,  Calls,B2_b.csv
-Total waiting time: 1783282.6402240375,  average waiting time per call: 1783.2826402240376,  unCompleted calls,963,  certificate, -4320992025
+Code Owners,212174486,208601401,  Building_file,B2.json,  Calls,B2_b.csv
+Total waiting time: 1783282.6402240375,  average waiting time per call: 1783.2826402240376,  unCompleted calls,963,  certificate, -4316437688

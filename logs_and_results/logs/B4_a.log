@@ -1,4 +1,4 @@
-Ex1 (OOP) Simulator log: stage ./data/Ex1_input/Ex1_Buildings/B4.json,  B4_a.csv
+Ex1 (OOP) Simulator log: stage B4.json,  B4_a.csv
 0.0,OOP_Ex1_Elevator_Simulator
 0.0,Simulated Building, Building [-10,100]
 0) ex1.Elevator_A, Elev_, id,0,  speed, 1.0, open: 2.0,  start: 3.0, close: 2.0,  stop: 3.0
@@ -500,5 +500,5 @@ Ex1 (OOP) Simulator log: stage ./data/Ex1_input/Ex1_Buildings/B4.json,  B4_a.csv
 1001.0,Elev,3,  arrived at dest, -1, this call is done!, Elevator call,978.6210501,10,-1,3,3, Done, dt, 22.378949899999952
 1010.0,Elev,1,  arrived at dest, 0, this call is done!, Elevator call,978.5925149,10,0,3,1, Done, dt, 31.40748510000003
 1011.0,************* Simulation Ended ************
-Code Owners,208601401,212174486,  Building_file,./data/Ex1_input/Ex1_Buildings/B4.json,  Calls,B4_a.csv
-Total waiting time: 2127.0,  average waiting time per call: 21.27,  unCompleted calls,0,  certificate, -51398310
+Code Owners,212174486,208601401,  Building_file,B4.json,  Calls,B4_a.csv
+Total waiting time: 2127.0,  average waiting time per call: 21.27,  unCompleted calls,0,  certificate, -64667915
